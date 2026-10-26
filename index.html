@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terraria Banner Store - CITE001 Final Project</title>
+    <title>Terraria Banner Store - Final Project</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -13,7 +13,6 @@
             padding: 0; 
             display: flex; 
             justify-content: center; 
-            align-content: center; 
             align-items: center; 
             min-height: 100vh; 
         }
@@ -66,13 +65,18 @@
         .info-box strong { 
             color: #fff; 
         }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
         .btn-proceed { 
-            display: inline-block; 
+            display: block; 
             width: 100%; 
             padding: 14px 0; 
             background: #2e7d32; 
             color: white; 
-            font-size: 18px; 
+            font-size: 16px; 
             font-weight: bold; 
             text-decoration: none; 
             border-radius: 6px; 
@@ -82,6 +86,22 @@
         .btn-proceed:hover { 
             background: #388e3c; 
         }
+        .btn-admin { 
+            display: block; 
+            width: 100%; 
+            padding: 14px 0; 
+            background: #0288d1; 
+            color: white; 
+            font-size: 16px; 
+            font-weight: bold; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            transition: background 0.2s ease; 
+            box-sizing: border-box; 
+        }
+        .btn-admin:hover { 
+            background: #0277bd; 
+        }
     </style>
 </head>
 <body>
@@ -89,15 +109,17 @@
     <div class="landing-card">
         <span class="badge">Final Project Submission</span>
         <h1>Terraria Banner Store</h1>
-        <h2>CITE001: Introduction to Computing</h2>
+        <h2>Introduction to Computing</h2>
 
         <div class="info-box">
             <p><strong>Submitted by:</strong> Capule, John Carlo & Turgo, Ron</p>
-            <p><strong>Course & Section:</strong> BS Computer Science - CITE001</p>
-            <p><strong>Tech Stack:</strong> HTML5, CSS3, JavaScript (ES6), Supabase Database, GitHub Pages</p>
+            <p><strong>Course & Section:</strong> BS Computer Science - CS11S1</p>
         </div>
 
-        <a href="register.html" class="btn-proceed">Proceed to Store Register ➔</a>
+        <div class="button-group">
+            <a href="register.html" class="btn-proceed">Proceed to Store Register ➔</a>
+            <a href="admin.html" class="btn-admin">View Live Database (Admin) 📊</a>
+        </div>
     </div>
 
 </body>
