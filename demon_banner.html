@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demon Banner - Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1e; color: #f0f0f0; margin: 0; padding: 20px; }
+        .container { max-width: 550px; margin: 20px auto; background: #25252b; padding: 25px; border-radius: 8px; border: 2px solid #444; }
+        nav { text-align: center; margin-bottom: 20px; }
+        nav a { color: #81d4fa; text-decoration: none; margin: 0 8px; font-weight: bold; }
+        h1 { color: #ffca28; text-align: center; margin-top: 0; }
+        .img-wrap { text-align: center; margin-bottom: 15px; }
+        .img-wrap img { width: 90px; background: #111; padding: 8px; border-radius: 6px; }
+        label { display: block; margin-top: 12px; font-weight: bold; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; margin-top: 4px; box-sizing: border-box; background: #1a1a1e; color: #fff; border: 1px solid #555; border-radius: 4px; }
+        .total-box { margin-top: 15px; font-size: 17px; color: #81c784; font-weight: bold; }
+        button { width: 100%; padding: 12px; background: #2e7d32; color: white; font-weight: bold; border: none; border-radius: 4px; margin-top: 20px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #388e3c; }
+        .receipt { display: none; margin-top: 20px; padding: 20px; background: #111; border: 2px dashed #ffca28; border-radius: 6px; }
+        .receipt h3 { color: #ffca28; margin-top: 0; text-align: center; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="products.html">Catalog</a> |
+        <a href="register.html">Register</a> |
+        <a href="login.html">Login</a> |
+        <a href="contact.html">Contact Us</a>
+    </nav>
+
+    <div class="container">
+        <h1 id="itemName">Demon Banner</h1>
+        <div class="img-wrap"><img src="https://terraria.wiki.gg/images/b/b3/Demon_Banner.png" alt="Demon Banner"></div>
+        <p>+50% damage bonus & +25% defense bonus against Underworld Demons.</p>
+        <p><strong>Base Price:</strong> 75 Silver Coins</p>
+
+        <form id="orderForm">
+            <label>Quantity</label>
+            <input type="number" id="quantity" value="1" min="1" required>
+
+            <label>Voucher Code</label>
+            <input type="text" id="voucher" placeholder="Enter 10% off code">
+
+            <label>Delivery Location / Address</label>
+            <input type="text" id="location" placeholder="e.g. Forest Pylon, World Alpha" required>
+
+            <label>Payment Method</label>
+            <select id="paymentMethod">
+                <option value="COD">Cash on Delivery (COD)</option>
+                <option value="Card">Visa / Credit Card</option>
+            </select>
+
+            <div id="cardField" style="display: none;">
+                <label>Card Details (Number & Expiry)</label>
+                <input type="text" id="cardInfo" placeholder="4000 1234 5678 9010 | 12/28">
+            </div>
+
+            <div class="total-box">Total: <span id="totalDisplay">75.00</span> Silver Coins</div>
+
+            <button type="submit">Place Order</button>
+        </form>
+
+        <div id="receipt" class="receipt">
+            <h3>ORDER CONFIRMED</h3>
+            <p><strong>Item:</strong> <span id="rItem"></span></p>
+            <p><strong>Quantity:</strong> <span id="rQty"></span></p>
+            <p><strong>Total Cost:</strong> <span id="rTotal"></span> Silver</p>
+            <p><strong>Location:</strong> <span id="rLoc"></span></p>
+            <p><strong>Payment:</strong> <span id="rPay"></span></p>
+            <p><strong>Estimated Delivery:</strong> <span id="rShip"></span></p>
+            <p style="color: #81c784; text-align: center; margin-top: 12px;">✓ Logged to database!</p>
+        </div>
+    </div>
+
+    <script>
+        const unitPrice = 75;
+        const db = supabase.createClient('https://dbwmpkgzbdqidbjghnez.supabase.co', 'sb_publishable_lA0OAlDYUigOZXkgOK6baw_52fNi8Ec');
+
+        document.getElementById('paymentMethod').addEventListener('change', (e) => {
+            document.getElementById('cardField').style.display = e.target.value === 'Card' ? 'block' : 'none';
+        });
+
+        function calcTotal() {
+            const qty = parseInt(document.getElementById('quantity').value) || 1;
+            const v = document.getElementById('voucher').value.trim();
+            let total = qty * unitPrice;
+            if (v !== "") total *= 0.90;
+            document.getElementById('totalDisplay').innerText = total.toFixed(2);
+            return total.toFixed(2);
+        }
+
+        document.getElementById('quantity').addEventListener('input', calcTotal);
+        document.getElementById('voucher').addEventListener('input', calcTotal);
+
+        const savedV = localStorage.getItem("userVoucher");
+        if (savedV) { document.getElementById('voucher').value = savedV; calcTotal(); }
+
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const item = document.getElementById('itemName').innerText;
+            const qty = parseInt(document.getElementById('quantity').value);
+            const total = calcTotal();
+            const loc = document.getElementById('location').value;
+            const pay = document.getElementById('paymentMethod').value;
+            const card = pay === 'Card' ? document.getElementById('cardInfo').value : 'N/A (COD)';
+
+            const today = new Date();
+            const d1 = new Date(today); d1.setDate(today.getDate() + 2);
+            const d2 = new Date(today); d2.setDate(today.getDate() + 3);
+            const shipStr = d1.toDateString() + " - " + d2.toDateString();
+
+            const { error } = await db.from('orders').insert([
+                { item_name: item, quantity: qty, total_price: total, location: loc, payment_method: pay, card_info: card, estimated_delivery: shipStr }
+            ]);
+
+            if (error) {
+                alert("Order failed: " + error.message);
+            } else {
+                document.getElementById('orderForm').style.display = 'none';
+                document.getElementById('receipt').style.display = 'block';
+                document.getElementById('rItem').innerText = item;
+                document.getElementById('rQty').innerText = qty;
+                document.getElementById('rTotal').innerText = total;
+                document.getElementById('rLoc').innerText = loc;
+                document.getElementById('rPay').innerText = pay + (pay === 'Card' ? ` (${card})` : '');
+                document.getElementById('rShip').innerText = shipStr;
+            }
+        });
+    </script>
+</body>
+</html>

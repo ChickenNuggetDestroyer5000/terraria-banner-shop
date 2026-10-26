@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terraria Banner Shop - Register</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1e; color: #f0f0f0; margin: 0; padding: 20px; }
+        .container { max-width: 480px; margin: 40px auto; background: #25252b; padding: 30px; border-radius: 8px; border: 2px solid #444; }
+        h1, h2 { text-align: center; color: #ffca28; margin-top: 0; }
+        nav { text-align: center; margin-bottom: 20px; }
+        nav a { color: #81d4fa; text-decoration: none; margin: 0 8px; font-weight: bold; }
+        label { display: block; margin-top: 14px; font-weight: bold; font-size: 14px; }
+        input { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; background: #1a1a1e; color: #fff; border: 1px solid #555; border-radius: 4px; }
+        button { width: 100%; padding: 12px; background: #ffca28; color: #111; font-weight: bold; border: none; border-radius: 4px; margin-top: 22px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #ffd54f; }
+        .voucher-box { display: none; margin-top: 20px; padding: 15px; background: #1b5e20; border: 1px solid #4caf50; border-radius: 5px; text-align: center; }
+        .switch-page { text-align: center; margin-top: 15px; font-size: 14px; }
+        .switch-page a { color: #81d4fa; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="products.html">Catalog</a> |
+        <a href="register.html">Register</a> |
+        <a href="login.html">Login</a> |
+        <a href="contact.html">Contact Us</a>
+    </nav>
+
+    <div class="container">
+        <h1>Terraria Shop</h1>
+        <h2>Create Account</h2>
+        
+        <form id="regForm">
+            <label>First Name</label>
+            <input type="text" id="firstName" required>
+
+            <label>Last Name</label>
+            <input type="text" id="lastName" required>
+
+            <label>Email Address</label>
+            <input type="email" id="email" required>
+
+            <label>Password</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Register Account</button>
+        </form>
+
+        <div id="voucherDisplay" class="voucher-box">
+            <h3>Account Registered!</h3>
+            <p>Your 10% Discount Code:</p>
+            <h2 id="voucherCodeText" style="color: #fff; background: #000; padding: 8px; border-radius: 4px;"></h2>
+            <p><small>Saved to your browser session. Use it at checkout!</small></p>
+            <button onclick="window.location.href='login.html'" style="background: #0288d1; color: #fff; margin-top: 10px;">Proceed to Login</button>
+        </div>
+
+        <div class="switch-page">
+            <p>Already have an account? <a href="login.html">Log in here</a></p>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://dbwmpkgzbdqidbjghnez.supabase.co';
+        const supabaseKey = 'sb_publishable_lA0OAlDYUigOZXkgOK6baw_52fNi8Ec';
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+        document.getElementById('regForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fName = document.getElementById('firstName').value;
+            const lName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const voucher = "TERRARIA10-" + Math.floor(1000 + Math.random() * 9000);
+
+            const { error } = await db.from('users').insert([
+                { first_name: fName, last_name: lName, email: email, password: password, voucher_code: voucher }
+            ]);
+
+            if (error) {
+                alert("Error saving account: " + error.message);
+            } else {
+                localStorage.setItem("userVoucher", voucher);
+                document.getElementById('regForm').style.display = "none";
+                document.getElementById('voucherDisplay').style.display = "block";
+                document.getElementById('voucherCodeText').innerText = voucher;
+            }
+        });
+    </script>
+</body>
+</html>
