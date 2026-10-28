@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     <title>Terraria Banner Shop - Contact</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -15,6 +15,30 @@
         .box { background: #1a1a1e; padding: 15px; border-radius: 6px; border: 1px solid #444; margin-bottom: 20px; }
         .box p { margin: 8px 0; font-size: 14px; }
         a.ext { color: #81d4fa; }
+        
+        /* Styling for the new data prompt box */
+        .data-prompt-box {
+            background: #1a1a1e;
+            border: 1px dashed #0288d1;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .data-prompt-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #bbb;
+        }
+        .data-prompt-box a {
+            color: #ffca28;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .data-prompt-box a:hover {
+            color: #ffe082;
+        }
+
         .contact-form { background: #1a1a1e; padding: 20px; border-radius: 6px; border: 1px solid #444; margin-bottom: 20px; }
         .contact-form label { display: block; margin-top: 14px; font-weight: bold; font-size: 14px; }
         .contact-form label:first-child { margin-top: 0; }
@@ -38,7 +62,6 @@
         <a href="index.html">Home</a> |
         <a href="products.html">Gallery</a> |
         <a href="contact.html">Contact Us</a> |
-        <a href="admin.html">View Database</a> |
         <a href="login.html">Login</a>
     </nav>
 
@@ -74,6 +97,11 @@
             <button type="submit" id="submitBtn">Send Message</button>
             <p id="contactStatus"></p>
         </form>
+
+        <!-- Database Link Callout Box -->
+        <div class="data-prompt-box">
+            <p>Wanna see the data? Click here to view the live <a href="admin.html">database</a>!</p>
+        </div>
 
         <h2>Community Channels</h2>
         <div class="box">
