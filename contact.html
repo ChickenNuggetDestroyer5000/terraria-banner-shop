@@ -1,11 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <script>
+        if (sessionStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
     <title>Terraria Banner Shop - Contact</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1e; color: #f0f0f0; margin: 0; padding: 20px; }
         .container { max-width: 500px; margin: 40px auto; background: #25252b; padding: 30px; border-radius: 8px; border: 2px solid #444; }
@@ -37,9 +41,7 @@
     <nav>
         <a href="index.html">Home</a> |
         <a href="products.html">Gallery</a> |
-        <a href="products.html#order">Order Now</a> |
         <a href="contact.html">Contact Us</a> |
-        <a href="about.html">About Us</a> |
         <a href="login.html">Login</a>
     </nav>
 
@@ -72,7 +74,7 @@
             <label for="cMessage">Message</label>
             <textarea id="cMessage" rows="5" placeholder="Type your message here (at least 10 characters)" required minlength="10"></textarea>
 
-            <button type="submit">Send Message</button>
+            <button type="submit" id="submitBtn">Send Message</button>
             <p id="contactStatus"></p>
         </form>
 
@@ -85,13 +87,47 @@
     </div>
 
     <script>
-        document.getElementById('contactForm').addEventListener('submit', function (e) {
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById('contactForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+            
             const name = document.getElementById('cName').value.trim();
+            const email = document.getElementById('cEmail').value.trim();
+            const subject = document.getElementById('cSubject').value;
+            const message = document.getElementById('cMessage').value.trim();
             const status = document.getElementById('contactStatus');
-            status.style.color = '#81c784';
-            status.textContent = 'Thanks, ' + name + '! Your message has been sent. We will reply soon.';
-            this.reset();
+            const submitBtn = document.getElementById('submitBtn');
+
+            const messagePayload = {
+                name: name,
+                email: email,
+                subject: subject,
+                message: message,
+                created_at: new Date()
+            };
+
+            submitBtn.textContent = 'Sending to Cloud...';
+            submitBtn.disabled = true;
+
+            const { data, error } = await db
+                .from('messages')
+                .insert([messagePayload]);
+
+            if (error) {
+                status.style.color = '#ef5350';
+                status.textContent = 'Failed to send message: ' + error.message;
+                submitBtn.textContent = 'Send Message';
+                submitBtn.disabled = false;
+            } else {
+                status.style.color = '#81c784';
+                status.textContent = 'Thanks, ' + name + '! Your message has been saved to the cloud. We will reply soon.';
+                this.reset();
+                submitBtn.textContent = 'Send Message';
+                submitBtn.disabled = false;
+            }
         });
     </script>
 
