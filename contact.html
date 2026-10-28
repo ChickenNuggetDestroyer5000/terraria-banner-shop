@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <script>
+        if (sessionStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
     <title>Terraria Banner Shop - Contact</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -38,6 +42,7 @@
         <a href="index.html">Home</a> |
         <a href="products.html">Gallery</a> |
         <a href="contact.html">Contact Us</a> |
+        <a href="admin.html">View Database</a> |
         <a href="login.html">Login</a>
     </nav>
 
@@ -83,8 +88,8 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
-        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        const SUPABASE_URL = 'https://dbwmpkgzbdqidbjghnez.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_lA0OAlDYUigOZXkgOK6baw_52fNi8Ec';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         document.getElementById('contactForm').addEventListener('submit', async function (e) {
