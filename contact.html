@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if (sessionStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
     <title>Terraria Banner Shop - Contact</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1e; color: #f0f0f0; margin: 0; padding: 20px; }
@@ -13,14 +18,32 @@
         .box { background: #1a1a1e; padding: 15px; border-radius: 6px; border: 1px solid #444; margin-bottom: 20px; }
         .box p { margin: 8px 0; font-size: 14px; }
         a.ext { color: #81d4fa; }
+        .contact-form { background: #1a1a1e; padding: 20px; border-radius: 6px; border: 1px solid #444; margin-bottom: 20px; }
+        .contact-form label { display: block; margin-top: 14px; font-weight: bold; font-size: 14px; }
+        .contact-form label:first-child { margin-top: 0; }
+        .contact-form input, .contact-form select, .contact-form textarea {
+            width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box;
+            background: #25252b; color: #fff; border: 1px solid #555; border-radius: 4px;
+            font-family: inherit; font-size: 14px;
+        }
+        .contact-form textarea { resize: vertical; }
+        .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: #ffca28; }
+        .contact-form button {
+            width: 100%; padding: 12px; margin-top: 20px; background: #2e7d32; color: #fff;
+            font-weight: bold; font-size: 16px; border: none; border-radius: 4px; cursor: pointer;
+        }
+        .contact-form button:hover { background: #388e3c; }
+        #contactStatus { text-align: center; margin: 12px 0 0; font-size: 14px; }
     </style>
 </head>
 <body>
     <nav>
-        <a href="products.html">Catalog</a> |
-        <a href="register.html">Register</a> |
-        <a href="login.html">Login</a> |
-        <a href="contact.html">Contact Us</a>
+        <a href="index.html">Home</a> |
+        <a href="products.html">Gallery</a> |
+        <a href="products.html#order">Order Now</a> |
+        <a href="contact.html">Contact Us</a> |
+        <a href="about.html">About Us</a> |
+        <a href="login.html">Login</a>
     </nav>
 
     <div class="container">
@@ -28,9 +51,33 @@
         <h2>Contact Information</h2>
 
         <div class="box">
-            <p><strong>Email:</strong> chickennuggetdestroyer5000@gmail.com</p>
-            <p><strong>Locate us at:</strong> tung tung tung sahur's secret layer</p>
+            <p><strong>Email:</strong> mraturgo26@tip.edu.ph and mjccapule26@tip.edu.ph</p>
+            <p><strong>Locate us at:</strong></p>
+            <p>363 P. Casal St., Quiapo, Manila</p>
+            <p>1338 Arlegui St., Quiapo, Manila</p>
         </div>
+
+        <h2>Send Us a Message</h2>
+        <form id="contactForm" class="contact-form">
+            <label for="cName">Name</label>
+            <input type="text" id="cName" placeholder="Your name" required>
+
+            <label for="cEmail">Email</label>
+            <input type="email" id="cEmail" placeholder="you@example.com" required>
+
+            <label for="cSubject">Subject</label>
+            <select id="cSubject">
+                <option>Order Inquiry</option>
+                <option>Feedback</option>
+                <option>Other</option>
+            </select>
+
+            <label for="cMessage">Message</label>
+            <textarea id="cMessage" rows="5" placeholder="Type your message here (at least 10 characters)" required minlength="10"></textarea>
+
+            <button type="submit">Send Message</button>
+            <p id="contactStatus"></p>
+        </form>
 
         <h2>Community Channels</h2>
         <div class="box">
@@ -39,9 +86,21 @@
             <p><strong>Forums:</strong> <a class="ext" href="https://forums.terraria.org" target="_blank">forums.terraria.org</a></p>
         </div>
     </div>
-    <div style="margin-top: 30px; text-align: center; padding: 15px; background: #1a1a1e; border-radius: 8px; border: 1px solid #444;">
-    <p style="color: #ccc; margin-bottom: 8px; font-size: 14px;">Looking for the backend records?</p>
-    <a href="admin.html" style="color: #81d4fa; font-weight: bold; text-decoration: underline; font-size: 15px;">View Live Supabase Database Inspector 📊</a>
-</div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('cName').value.trim();
+            const status = document.getElementById('contactStatus');
+            status.style.color = '#81c784';
+            status.textContent = 'Thanks, ' + name + '! Your message has been sent. We will reply soon.';
+            this.reset();
+        });
+    </script>
+
+    <footer style="text-align:center; font-size:12px; color:#888; margin:30px 0 10px;">
+        Images courtesy of <a href="https://terraria.wiki.gg" target="_blank" style="color:#81d4fa;">terraria.wiki.gg</a>.
+        Terraria is a trademark of Re-Logic. Student project, not affiliated.
+    </footer>
 </body>
 </html>
