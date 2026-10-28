@@ -9,7 +9,7 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1a1a1e; color: #f0f0f0; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 20px auto; background: #25252b; padding: 25px; border-radius: 8px; border: 2px solid #444; }
         h1, h2 { color: #ffca28; text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #1a1a1e; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 25px; background: #1a1a1e; }
         th, td { border: 1px solid #444; padding: 10px; text-align: left; font-size: 14px; }
         th { background: #333; color: #81d4fa; }
         tr:nth-child(even) { background: #222228; }
@@ -63,13 +63,30 @@
                 <tr><td colspan="7" style="text-align: center;">Loading orders...</td></tr>
             </tbody>
         </table>
+
+        <h2>Contact Messages</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="messagesTable">
+                <tr><td colspan="6" style="text-align: center;">Loading messages...</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
         const db = supabase.createClient('https://dbwmpkgzbdqidbjghnez.supabase.co', 'sb_publishable_lA0OAlDYUigOZXkgOK6baw_52fNi8Ec');
 
         async function loadData() {
-            // Fetch users from Supabase
+            // 1. Fetch Users from Supabase
             const { data: users, error: userErr } = await db.from('users').select('*').order('id', { ascending: false });
             const userBody = document.getElementById('usersTable');
             userBody.innerHTML = '';
@@ -89,7 +106,7 @@
                 });
             }
 
-            // Fetch orders from Supabase
+            // 2. Fetch Orders from Supabase
             const { data: orders, error: orderErr } = await db.from('orders').select('*').order('id', { ascending: false });
             const orderBody = document.getElementById('ordersTable');
             orderBody.innerHTML = '';
@@ -107,6 +124,27 @@
                             <td>${o.location || 'N/A'}</td>
                             <td>${o.payment_method || 'N/A'}</td>
                             <td>${o.estimated_delivery || 'N/A'}</td>
+                        </tr>`;
+                });
+            }
+
+            // 3. Fetch Messages from Supabase
+            const { data: messages, error: msgErr } = await db.from('messages').select('*').order('id', { ascending: false });
+            const msgBody = document.getElementById('messagesTable');
+            msgBody.innerHTML = '';
+
+            if (msgErr || !messages || messages.length === 0) {
+                msgBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No messages found in database yet.</td></tr>';
+            } else {
+                messages.forEach(m => {
+                    msgBody.innerHTML += `
+                        <tr>
+                            <td>${m.id}</td>
+                            <td><strong>${m.name || 'N/A'}</strong></td>
+                            <td>${m.email || 'N/A'}</td>
+                            <td>${m.subject || 'N/A'}</td>
+                            <td>${m.message || 'N/A'}</td>
+                            <td>${m.created_at ? new Date(m.created_at).toLocaleString() : 'N/A'}</td>
                         </tr>`;
                 });
             }
